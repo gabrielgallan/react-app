@@ -1,10 +1,11 @@
+import styles from './Post.module.css'
+
 interface PostProps {
     author: string
     content: string
 }
 
-export function Post({ author, content }: PostProps)
-{
+export function Post({ author, content }: PostProps) {
     return (
         <>
             <strong>{author}</strong>
