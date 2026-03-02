@@ -2,12 +2,24 @@ import styles from './Comment.module.css'
 
 import { ThumbsUpIcon, TrashIcon } from '@phosphor-icons/react'
 import { Avatar } from './Avatar'
+import { useState } from 'react'
 
 interface CommentProps {
     content: string
+    onDelete: (comment: string) => void
 }
 
-export function Comment({ content }: CommentProps) {
+export function Comment({ content, onDelete }: CommentProps) {
+    const [likeCount, setLikeCount] = useState(0)
+
+    function handleDeleteComment() {
+        onDelete(content)
+    }
+
+    function handleLikeComment() {
+        setLikeCount(likeCount + 1)
+    }
+
     return (
         <div className={styles.comment}>
             <Avatar
@@ -28,7 +40,7 @@ export function Comment({ content }: CommentProps) {
                             </time>
                         </div>
 
-                        <button title='Deletar comentário'>
+                        <button onClick={handleDeleteComment} title='Deletar comentário'>
                             <TrashIcon size={22} />
                         </button>
                     </header>
@@ -37,9 +49,9 @@ export function Comment({ content }: CommentProps) {
                 </div>
 
                 <footer>
-                    <button>
+                    <button onClick={handleLikeComment}>
                         <ThumbsUpIcon size={22} />
-                        Aplaudir <span>20</span>
+                        Aplaudir <span>{likeCount}</span>
                     </button>
                 </footer>
             </div>

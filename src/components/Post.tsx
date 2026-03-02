@@ -34,6 +34,8 @@ export function Post({ post }: PostProps) {
 
     const [newCommentText, setNewCommentText] = useState('')
 
+    const isNewCommentEmpty = newCommentText.length === 0
+
     const publishedDateFormatted = format(post.publishedAt, "d 'de' LLLL 'ás' HH:mm'h'", {
         locale: ptBR
     })
@@ -52,8 +54,22 @@ export function Post({ post }: PostProps) {
     }
 
     function handleNewCommentChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+        event.target.setCustomValidity('')
         setNewCommentText(event.target.value)
     }
+
+    function deleteComment(commentToDelete: string) {
+        const commentListWithoutDeletedOne = comments.filter(comment => {
+            return comment !== commentToDelete
+        })
+
+        setComments(commentListWithoutDeletedOne)
+    }
+
+    function handleNewCommentInvalid(event: React.InvalidEvent<HTMLTextAreaElement>) {
+        event.target.setCustomValidity('Esse campo é obrigatório!')
+    }
+
 
     return (
         <article className={styles.post}>
@@ -94,13 +110,21 @@ export function Post({ post }: PostProps) {
                     value={newCommentText}
                     onChange={handleNewCommentChange}
                     placeholder='Deixe um comentário'
+                    onInvalid={handleNewCommentInvalid}
+                    required
                 />
 
-                <button type='submit'>Publicar</button>
+
+                <button
+                    type='submit'
+                    disabled={isNewCommentEmpty}
+                >
+                    Publicar
+                </button>
             </form>
 
             <div className={styles.commentList}>
-                {comments.map((comment) => <Comment content={comment} />)}
+                {comments.map((comment) => <Comment key={comment} content={comment} onDelete={deleteComment} />)}
             </div>
         </article>
     )
